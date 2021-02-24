@@ -21,25 +21,29 @@ class Scraper
 
   def self.scrape_profile_page(profile_url) #scraping an individual student's profile page to personal information
     doc = Nokogiri::HTML(open(profile_url))
+  end	    student = Hash.new
 
-    student_details = {}
-    doc.css("div.social-icon-container").each do |social_media|
-   if social_media.include?("twitter")
-     student_details[:twitter] = doc.css("div.social-icon-containter")[0]["href"]
-   elsif social_media.include?("linkedin")
-     student_details[:linkedin] = doc.css("div.social-icon-containter")[0]["href"]
-   elsif social_media.include?("github")
-     student_details[:github] = doc.css("div.social-icon-containter")[0]["href"]
-   elsif social_media.include?(".com")
-     student_details[:blog]= doc.css("div.social-icon-container a")[0]["href"]
-   end
- end
 
- student_details[:profile_quote] = doc.css("div.vitals-text-container.profile-quote").text
- student_details[:bio] = doc.css("div.details-container.description-holder p").text
-
- student_details
- end
+    social_icons = doc.css("div.social-icon-container a").collect {|x| x.attribute("href").value}
+    social_icons.each do |social_icon|
+      if social_icon.include?("linkedin")
+        student[:linkedin] = social_icon
+      elsif social_icon.include?("github")
+        student[:github] = social_icon
+      elsif social_icon.include?("twitter")
+        student[:twitter] = social_icon
+      else
+        student[:blog] = social_icon
+      end
+    end
+    # if doc.css("div.bio-content.content-holder div.description-holder p")
+      student[:bio] = doc.css("div.bio-content.content-holder div.description-holder p").text
+    # end
+    # if doc.css(".profile-quote")
+      student[:profile_quote] = doc.css(".profile-quote").text
+    # end
+    student
+  end
 
 
 end
