@@ -12,9 +12,9 @@ class Scraper
     doc.css("div.student-card").each do |student|
       scraped_students << {
         name: student.css("h4.student-name").text,
-        location: student.css("p.student-location").text, 
+        location: student.css("p.student-location").text,
         profile_url: "http://students.learn.co/#{student.css("a").attribute("href").value}"}
-        
+
     end
     scraped_students
   end
@@ -33,7 +33,7 @@ class Scraper
    elsif social_media.include?(".com")
      student_details[:blog]= doc.css("div.social-icon-container a")[0]["href"]
    end
- end 
+ end
 
  student_details[:profile_quote] = doc.css("div.vitals-text-container.profile-quote").text
  student_details[:bio] = doc.css("div.details-container.description-holder p").text
